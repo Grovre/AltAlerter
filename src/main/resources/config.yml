@@ -1,0 +1,4 @@
+alertMessage: '%p has the same IP address as %j!' # use %p for online player, %j for joining player
+showIpInMessage: true
+showAlertInConsole: true
+sendAlertToPermitted: true

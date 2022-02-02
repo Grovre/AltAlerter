@@ -2,6 +2,7 @@ package me.grovre.altalerter;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -11,6 +12,8 @@ import java.net.InetAddress;
 import java.util.Collection;
 
 public class OnPlayerJoin implements Listener {
+
+    private final FileConfiguration config = Bukkit.getPluginManager().getPlugin("AltAlerter").getConfig();
 
     @EventHandler
     public void OnPlayerJoinServer(PlayerJoinEvent event) {
@@ -37,10 +40,13 @@ public class OnPlayerJoin implements Listener {
             }
             // When there's a hit and an IP DOES match
             if(joiningPlayerIpAddress.equals(onlinePlayerIpAddress)) {
-                System.out.println("HIT!");
-                System.out.println(ChatColor.RED + joiningPlayerName + " has the same IP address as "  + onlinePlayerName + "!");
-                sendToPermitted(joiningPlayer,onlinePlayer, joiningPlayerIpAddress);
-            } else System.out.println("No match against " + onlinePlayerName);
+                if(config.getBoolean("showAlertInConsole")) {
+                    System.out.println(ChatColor.RED + joiningPlayerName + " has the same IP address as " + onlinePlayerName + "!" + "(" + joiningPlayerIpAddress + ")");
+                }
+                if(config.getBoolean("sendAlertToPermitted")) {
+                    sendToPermitted(joiningPlayer,onlinePlayer, joiningPlayerIpAddress);
+                }
+            }
         }
     }
 
@@ -48,7 +54,17 @@ public class OnPlayerJoin implements Listener {
     public void sendToPermitted(Player joiningPlayer, Player onlinePlayer, InetAddress ip) {
         for(Player p : Bukkit.getOnlinePlayers()) {
             if(p.hasPermission("altAlerter.getAlerts")) {
-                p.sendMessage(ChatColor.RED + joiningPlayer.getName() + " has the same IP address as "  + onlinePlayer.getName() + "(" + ip + ")!");
+                String message = config.getString("alertMessage");
+                if(message == null) {
+                    System.out.println("alertMessage is NULL!");
+                    return;
+                }
+                message = message.replace("%p", onlinePlayer.getName());
+                message = message.replace("%j", joiningPlayer.getName());
+                if(config.getBoolean("showIpInMessage")) {
+                    message = message + " (" + ip + ")";
+                }
+                p.sendMessage(ChatColor.RED + message);
             }
         }
     }
