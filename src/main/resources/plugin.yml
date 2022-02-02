@@ -1,0 +1,7 @@
+name: AltAlerter
+version: '${project.version}'
+main: me.grovre.altalerter.AltAlerter
+api-version: 1.18
+authors: [ PoptartFromPluto ]
+description: Notifies server staff and logs to the console anybody with matching IP address. Use altAlerter.getAlerts to let staff on a server see the notifications!
+website: https://github.com/grovre
