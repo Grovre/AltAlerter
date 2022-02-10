@@ -1,16 +1,20 @@
 package me.grovre.altalerter;
 
+import me.grovre.altalerter.listeners.OnPlayerJoin;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class AltAlerter extends JavaPlugin {
 
+    private static AltAlerter plugin;
+
     @Override
     public void onEnable() {
-        // Plugin startup logic
-        // sometimes just dumb like that, putting this event register into onDisable like retard
+        plugin = this;
+        /*
+        perms:
+        altAlerter.getAlerts
+         */
         this.saveDefaultConfig();
 
         Bukkit.getServer().getPluginManager().registerEvents(new OnPlayerJoin(), this);
@@ -20,5 +24,10 @@ public final class AltAlerter extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+    }
+
+    public static AltAlerter getPlugin() {
+        return plugin;
     }
 }
