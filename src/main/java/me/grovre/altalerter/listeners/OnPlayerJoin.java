@@ -1,4 +1,4 @@
-package me.grovre.altalerter;
+package me.grovre.altalerter.listeners;
 
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
