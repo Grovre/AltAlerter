@@ -1,7 +1,6 @@
 package me.grovre.altalerter;
 
 import org.bukkit.entity.Player;
-import org.checkerframework.checker.nullness.qual.Nullable;
 
 import java.net.InetAddress;
 import java.util.ArrayList;
@@ -9,67 +8,65 @@ import java.util.UUID;
 
 public class PlayerInfo {
 
-    private Player player;
-    private InetAddress lastIp;
-    private ArrayList<InetAddress> ipHistory;
-    private UUID uuid;
+    private String player;
+    private final UUID uuid;
+    private String lastIp;
+    private ArrayList<String> ipHistory;
 
     public PlayerInfo(Player player) {
-        this.player = player;
-        this.lastIp = player.getAddress().getAddress();
-        if(lastIp == null) {
-            lastIp = ipHistory.get(ipHistory.size() - 1);
-        }
+        this.player = player.getName();
         this.uuid = player.getUniqueId();
-    }
-
-    public void moveIpToHistory() {
-        for(InetAddress ip : ipHistory) {
-            if(lastIp.equals(ip)) {
-                return;
-            }
-        }
+        this.lastIp = player.getAddress().getAddress().toString();
+        this.ipHistory = new ArrayList<>();
         ipHistory.add(lastIp);
     }
 
-    public void setNewIp(InetAddress ip) {
-        moveIpToHistory();
-        lastIp = ip;
+    public String compareIps(PlayerInfo other) {
+        for(String ip1 : ipHistory) {
+            for(String ip2 : other.ipHistory) {
+                if(ip1.equals(ip2)) {
+                    return ip1;
+                }
+            }
+        }
+        return null;
     }
 
-    public boolean compareIps(InetAddress ip) {
-        return lastIp.equals(ip);
+    public boolean hasUsedIp(PlayerInfo other) {
+        return compareIps(other) != null;
     }
 
-    public boolean compareUUIDs(UUID uuid) {
-        return this.uuid.equals(uuid);
+    public boolean compareUUIDs(PlayerInfo other) {
+        return this.uuid == other.uuid;
     }
 
-    public boolean comparePlayers(Player player) {
-        return this.player.equals(player);
+    public void setNewLastIp(InetAddress ip) {
+        if(!isLastIpInHistory()) {
+            ipHistory.add(lastIp);
+        }
+        lastIp = ip.toString();
     }
 
-    public Player getPlayer() {
-        return player;
-    }
-
-    public InetAddress getLastIp() {
-        return lastIp;
-    }
-
-    public ArrayList<InetAddress> getIpHistory() {
-        return ipHistory;
+    public boolean isLastIpInHistory() {
+        for(String ip : ipHistory) {
+            if(ip.equals(lastIp)) return true;
+        }
+        return false;
     }
 
     public UUID getUuid() {
         return uuid;
     }
 
-    public void setLastIp(InetAddress lastIp) {
-        this.lastIp = lastIp;
+    public String getLastIp() {
+        return lastIp;
     }
 
-    public void setIpHistory(ArrayList<InetAddress> ipHistory) {
-        this.ipHistory = ipHistory;
+    public ArrayList<String> getIpHistory() {
+        return ipHistory;
+    }
+
+    public String getPlayer() {
+        return player;
     }
 }
