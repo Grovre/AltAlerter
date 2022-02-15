@@ -64,8 +64,12 @@ public class OnPlayerJoin implements Listener {
                     System.out.println("alertMessage is NULL!");
                     return;
                 }
-                message = message.replace("%p", onlinePlayer.getName());
-                message = message.replace("%j", joiningPlayer.getName());
+                try {
+                    message = message.replace("%p", onlinePlayer.getName());
+                } catch (Exception ignored) {}
+                try {
+                    message = message.replace("%j", joiningPlayer.getName());
+                } catch (Exception ignored) {}
                 if(config.getBoolean("showIpInAlertMessage")) {
                     message = message + " (" + ip + ")";
                 }
